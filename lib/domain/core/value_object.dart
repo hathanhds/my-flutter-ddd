@@ -18,6 +18,7 @@ abstract class ValueObject<T> {
   @override
   int get hashCode => value.hashCode;
 
+  // print
   @override
   String toString() => 'Value($value)';
 }
