@@ -4,13 +4,13 @@ import 'package:my_flutter_ddd/domain/auth/value_object.dart';
 
 abstract class IAuthFacade {
   Future<Either<AuthFailure, Unit>> registerWithEmailAndPassword({
-    EmailAddress emailAddress,
-    Password password,
+    required EmailAddress emailAddress,
+    required Password password,
   });
 
   Future<Either<AuthFailure, Unit>> signInWithEmailAndPassword({
-    EmailAddress emailAddress,
-    Password password,
+    required EmailAddress emailAddress,
+    required Password password,
   });
 
   Future<Either<AuthFailure, Unit>> signInWithGoogle();

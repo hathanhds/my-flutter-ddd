@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:my_flutter_ddd/domain/core/erorrs.dart';
 import 'package:my_flutter_ddd/domain/core/failures.dart';
 
 @immutable
@@ -11,6 +12,10 @@ abstract class ValueObject<T> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is ValueObject<T> && other.value == value;
+  }
+
+  T getOrCrash() {
+    return value.fold((l) => throw UnexpectedValueError(l), id);
   }
 
   bool isValid() => value.isRight();
