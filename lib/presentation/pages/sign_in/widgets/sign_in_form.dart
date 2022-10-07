@@ -1,11 +1,13 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_flutter_ddd/application/auth/sign_in_form/bloc/sign_in_form_bloc.dart';
+import 'package:my_flutter_ddd/application/auth/sign_in_form/sign_in_form_bloc.dart';
 import 'package:styled_widget/styled_widget.dart';
 
 class SignInForm extends StatelessWidget {
-  const SignInForm({super.key});
+  SignInForm({super.key});
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +41,7 @@ class SignInForm extends StatelessWidget {
       },
       builder: (context, state) {
         return Form(
-          // autovalidate: state.showErrorMessages,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          key: _formKey,
           child: ListView(
             padding: const EdgeInsets.all(8.0),
             children: <Widget>[
@@ -56,6 +57,7 @@ class SignInForm extends StatelessWidget {
                     prefixIcon: Icon(Icons.email),
                     labelText: 'Email',
                   ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   autocorrect: false,
                   onChanged: (value) => context
                       .read<SignInFormBloc>()
@@ -68,12 +70,14 @@ class SignInForm extends StatelessWidget {
                       .fold(
                           (f) => f.maybeMap(
                                 invalidEmail: (_) => 'Invalid email',
+                                empty: (_) => 'Email can not be empty',
                                 orElse: () => null,
                               ),
                           (r) => null)),
-              const SizedBox(height: 8),
+              const SizedBox(height: 20),
               TextFormField(
                 key: const ValueKey<String>('password'),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.lock),
                   labelText: 'Password',
@@ -87,6 +91,7 @@ class SignInForm extends StatelessWidget {
                     context.read<SignInFormBloc>().state.password.value.fold(
                           (f) => f.maybeMap(
                             shortPassword: (_) => 'Short password',
+                            empty: (_) => 'Password can not be empty',
                             orElse: () => null,
                           ),
                           (_) => null,
@@ -97,18 +102,26 @@ class SignInForm extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => context.read<SignInFormBloc>().add(
-                          const SignInFormEvent
-                              .signInWithEmailAndPasswordPressed()),
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          context.read<SignInFormBloc>().add(
+                              const SignInFormEvent
+                                  .signInWithEmailAndPasswordPressed());
+                        }
+                      },
                       child: const Text('SIGN IN'),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () => context.read<SignInFormBloc>().add(
-                          const SignInFormEvent
-                              .registerWithEmailAndPasswordPressed()),
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          context.read<SignInFormBloc>().add(
+                              const SignInFormEvent
+                                  .registerWithEmailAndPasswordPressed());
+                        }
+                      },
                       child: const Text('REGISTER'),
                     ),
                   ),

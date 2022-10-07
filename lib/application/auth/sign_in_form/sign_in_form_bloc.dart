@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -20,20 +22,20 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
 
   Future<void> _onEvent(
       SignInFormEvent event, Emitter<SignInFormState> emit) async {
-    event.map(emailChanged: (e) async {
+    await event.map(emailChanged: (e) {
       emit(state.copyWith(
           emailAddress: EmailAddress(e.emailStr),
           authFailureOrSuccessOption: none()));
-    }, passwordChanged: (e) async {
+    }, passwordChanged: (e) {
       emit(state.copyWith(
           password: Password(e.passwordStr),
           authFailureOrSuccessOption: none()));
     }, registerWithEmailAndPasswordPressed: (e) async {
-      _performActionOnAuthFacadeWithEmailAndPassword(
-          _authFacade.registerWithEmailAndPassword, emit);
+      await _performActionOnAuthFacadeWithEmailAndPassword(
+          emit, _authFacade.registerWithEmailAndPassword);
     }, signInWithEmailAndPasswordPressed: (e) async {
-      _performActionOnAuthFacadeWithEmailAndPassword(
-          _authFacade.signInWithEmailAndPassword, emit);
+      await _performActionOnAuthFacadeWithEmailAndPassword(
+          emit, _authFacade.signInWithEmailAndPassword);
     }, signInWithGooglePressed: (e) async {
       emit(state.copyWith(
           isSubmitting: true, authFailureOrSuccessOption: none()));
@@ -45,13 +47,12 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
   }
 
   Future<void> _performActionOnAuthFacadeWithEmailAndPassword(
-    Future<Either<AuthFailure, Unit>> Function({
-      required EmailAddress emailAddress,
-      required Password password,
-    })
-        forwardedCall,
-    Emitter<SignInFormState> emit,
-  ) async {
+      Emitter<SignInFormState> emit,
+      Future<Either<AuthFailure, Unit>> Function({
+    required EmailAddress emailAddress,
+    required Password password,
+  })
+          forwardedCalled) async {
     Either<AuthFailure, Unit>? failureOrSuccess;
 
     final isEmailValid = state.emailAddress.isValid();
@@ -63,15 +64,14 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
         authFailureOrSuccessOption: none(),
       ));
 
-      failureOrSuccess = await forwardedCall(
+      failureOrSuccess = await forwardedCalled(
         emailAddress: state.emailAddress,
         password: state.password,
       );
     }
+
     emit(state.copyWith(
-      isSubmitting: false,
-      showErrorMessages: true,
-      authFailureOrSuccessOption: optionOf(failureOrSuccess),
-    ));
+        isSubmitting: false,
+        authFailureOrSuccessOption: optionOf(failureOrSuccess)));
   }
 }
