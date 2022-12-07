@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_flutter_ddd/application/auth_bloc.dart';
+import 'package:my_flutter_ddd/application/auth/auth_bloc.dart';
 import 'package:my_flutter_ddd/injection.dart';
 import 'package:my_flutter_ddd/presentation/pages/routes/router.gr.dart';
 

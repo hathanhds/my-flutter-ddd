@@ -4,6 +4,8 @@ import 'package:my_flutter_ddd/domain/auth/user.dart';
 import 'package:my_flutter_ddd/domain/auth/value_object.dart';
 
 abstract class IAuthFacade {
+  /// jump to implementation method
+  /// shortcut: cmd + fn + f12s
   Future<Option<CurrentUser>> getSignedInUser();
 
   Future<Either<AuthFailure, Unit>> registerWithEmailAndPassword({
