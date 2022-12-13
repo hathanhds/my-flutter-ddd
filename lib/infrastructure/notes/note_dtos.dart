@@ -36,8 +36,9 @@ abstract class NoteDto with _$NoteDto {
   factory NoteDto.fromJson(Map<String, dynamic> json) =>
       _$NoteDtoFromJson(json);
 
-  factory NoteDto.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
-    return NoteDto.fromJson(doc.data()!).copyWith(id: doc.id);
+  factory NoteDto.fromFirestore(
+      QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    return NoteDto.fromJson(doc.data()).copyWith(id: doc.id);
   }
 }
 

@@ -1,8 +1,12 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_flutter_ddd/application/auth/auth_bloc.dart';
 import 'package:my_flutter_ddd/application/auth/sign_in_form/sign_in_form_bloc.dart';
+import 'package:my_flutter_ddd/presentation/pages/notes/note_overview/note_overview_page.dart';
+import 'package:my_flutter_ddd/presentation/pages/routes/router.gr.dart';
 import 'package:styled_widget/styled_widget.dart';
+import 'package:auto_route/auto_route.dart';
 
 class SignInForm extends StatelessWidget {
   SignInForm({super.key});
@@ -30,10 +34,10 @@ class SignInForm extends StatelessWidget {
                 ).show(context);
               },
               (_) {
-                // Router.navigator.pushReplacementNamed(Router.notesOverviewPage);
-                // context
-                //     .bloc<AuthBloc>()
-                //     .add(const AuthEvent.authCheckRequested());
+                context.replaceRoute(const NotesOverviewRoute());
+                context
+                    .read<AuthBloc>()
+                    .add(const AuthEvent.authCheckRequested());
               },
             );
           },
